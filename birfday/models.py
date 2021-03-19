@@ -2,6 +2,8 @@ import datetime
 import logging
 from typing import Optional, List
 
+import dateutil.parser
+import pytz
 from sqlalchemy import (Column, Integer, String, DateTime, Boolean)
 from sqlalchemy.orm import Session
 
@@ -25,8 +27,7 @@ class Birthday(config.Base):
     @classmethod
     def create_birthday(
         cls, first_name: str, last_name: str, month: int, day: int,
-        note: Optional[str] = None, dt_created: Optional[str] = None,
-        dt_updated: Optional[str] = None
+        note: Optional[str] = None, dt_updated: Optional[str] = None
     ) -> "Birthday":
         """ Creates a Birthday object.
 
@@ -36,14 +37,31 @@ class Birthday(config.Base):
             month: int, The numeric representation of the month (1-12).
             day: int, The numeric representation of the day (1-31).
             note: str, A note associated with this person (e.g. X's husband).
-            dt_created: str, Datetime string for the creation date of this
-                record.
             dt_updated: str, Datetime string for the update date of this
-                record.
+                record in UTC time.
         Returns:
             An instantiated Birthday instance.
         """
-        raise NotImplementedError
+        if month not in range(1, 13):
+            raise ValueError("Month must be between 1 and 12 inclusive.")
+
+        if day not in range(1, 32):
+            raise ValueError("Day must be between 1 and 31 inclusive.")
+
+        data_dict = {
+            "first_name": first_name,
+            "last_name": last_name,
+            "month": month,
+            "day": day,
+            "note": note,
+        }
+
+        if dt_updated is not None:
+            data_dict["dt_updated"] = dateutil.parser.parse(
+                dt_updated).replace(tzinfo=pytz.utc)
+
+        return cls(**data_dict)
+
 
     @classmethod
     def get_birthdays_for_month(
@@ -57,4 +75,4 @@ class Birthday(config.Base):
         Returns:
             All database records with birthdays in month.
         """
-        raise NotImplementedError
+        return session.query(cls).filter(cls.month == month).all()
