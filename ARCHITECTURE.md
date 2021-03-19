@@ -9,6 +9,26 @@
  * Store sample / default messages so I can just copy/paste.
  * All implementations must be testable.
 
+# Data Model
+
+ * DB Models
+    * Birthday
+        * first name
+        * last name
+        * month
+        * day
+        * note
+        * dt_created
+        * dt_updated
+ * Messaging / API Helper
+    * Create client / connect to api
+    * Send message
+ * Config
+    * Constants
+ * Runner
+    * Db connection objects
+    * Main function
+
 # Happy Path
 
  1. Spin up, read config and instantiate logger.

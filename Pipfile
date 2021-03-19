@@ -4,6 +4,13 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
+sqlalchemy = "*"
+pytest = "*"
+factory-boy = "*"
+mypy = "*"
+pytest-mock = "*"
+pytz = "*"
+python-dateutil = "*"
 
 [dev-packages]
 
