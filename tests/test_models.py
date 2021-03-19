@@ -66,7 +66,9 @@ class BirthdayFactory(factory.alchemy.SQLAlchemyModelFactory):
 
 class TestBirthdayModel:
 
-    def test_create_birthday_creates_without_kwargs(self, session):
+    def test_create_birthday_creates_without_kwargs(
+        self, session, fake_datetime_utcnow
+    ):
         """Tests that our classmethod actually creates a Birthday object."""
         first_name = "first"
         last_name = "last"
@@ -83,22 +85,31 @@ class TestBirthdayModel:
         assert test_obj.month == month
         assert test_obj.day == day
         assert test_obj.note == note
-        assert test_obj.dt_created == FAKE_DATE_TIME
-        assert test_obj.dt_updated == FAKE_DATE_TIME
+        assert test_obj.dt_created is None
+        assert test_obj.dt_updated is None
 
-    def test_create_birthday_creates_with_kwargs(self, session):
+    def test_create_birthday_creates_with_kwargs(
+        self, session, fake_datetime_utcnow
+    ):
         """Tests that our classmethod actually creates a Birthdayy object."""
         first_name = "first"
         last_name = "last"
         month = 5
         day = 2
         note = "fake note"
-        dt_created = "2021-05-05"
         dt_updated = "2021-05-05 05:05:05"
 
         test_obj = models.Birthday.create_birthday(
-            first_name, last_name, month, day, note, dt_created=dt_created,
-            dt_updated=dt_updated
+            first_name, last_name, month, day, note, dt_updated=dt_updated
+        )
+
+        assert test_obj.first_name == first_name
+        assert test_obj.last_name == last_name
+        assert test_obj.month == month
+        assert test_obj.day == day
+        assert test_obj.note == note
+        assert test_obj.dt_updated == datetime.datetime(
+            2021, 5, 5, 5, 5, 5, tzinfo=pytz.utc
         )
 
     def test_get_birthdays_for_month_returns_birthdays(self, session):
@@ -131,3 +142,35 @@ class TestBirthdayModel:
 
         results = models.Birthday.get_birthdays_for_month(session, 1)
         assert results == []
+
+    def test_high_month_raises(self, session):
+        """Tests that we raise for a month above 12."""
+        with pytest.raises(
+            ValueError, match="Month must be between 1 and 12 inclusive."):
+            _ = models.Birthday.create_birthday(
+                "fake", "fake", 15, 1
+            )
+
+    def test_low_month_raises(self, session):
+        """Tests that we raise for a month below 1."""
+        with pytest.raises(
+            ValueError, match="Month must be between 1 and 12 inclusive."):
+            _ = models.Birthday.create_birthday(
+                "fake", "fake", 0, 1
+            )
+
+    def test_high_day_raises(self, session):
+        """Tests that we raise for a day above 31."""
+        with pytest.raises(
+            ValueError, match="Day must be between 1 and 31 inclusive."):
+            _ = models.Birthday.create_birthday(
+                "fake", "fake", 6, 51
+            )
+
+    def test_low_day_raises(self, session):
+        """Tests that we raise for a day below 1."""
+        with pytest.raises(
+            ValueError, match="Day must be between 1 and 31 inclusive."):
+            _ = models.Birthday.create_birthday(
+                "fake", "fake", 5, 0
+            )
