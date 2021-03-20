@@ -1,6 +1,6 @@
 import datetime
 import logging
-from typing import Optional, List
+from typing import Optional, List, Any
 
 import dateutil.parser
 import pytz
@@ -76,6 +76,6 @@ class Birthday(config.Base):
         Returns:
             All database records with birthdays in month.
         """
-        query = select(cls).where(cls.month == month)
-        results = session.execute(query)
-        return results.scalars().all()
+        return session.execute(
+            select(cls).where(cls.month == month)
+        ).scalars().all()
