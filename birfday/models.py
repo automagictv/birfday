@@ -4,6 +4,7 @@ from typing import Optional, List
 
 import dateutil.parser
 import pytz
+from sqlalchemy import select
 from sqlalchemy import (Column, Integer, String, DateTime, Boolean)
 from sqlalchemy.orm import Session
 
@@ -75,4 +76,6 @@ class Birthday(config.Base):
         Returns:
             All database records with birthdays in month.
         """
-        return session.query(cls).filter(cls.month == month).all()
+        query = select(cls).where(cls.month == month)
+        results = session.execute(query)
+        return results.scalars().all()
