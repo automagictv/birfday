@@ -3,6 +3,7 @@
  * Store data about friends/family birthday's.
  * Read data about birthdays.
  * Understand if today is a birthday (or multiple bdays).
+ * Handle leap year birthdays.
  * Add / Remove / Update birthday/person data.
  * Integrate with some notification / messaging API.
  * Can send messages to me via that API.
