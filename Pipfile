@@ -4,15 +4,19 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-sqlalchemy = "*"
 pytest = "*"
 factory-boy = "*"
-mypy = "*"
 pytest-mock = "*"
 pytz = "*"
 python-dateutil = "*"
+sqlalchemy = "*"
+mypy = "*"
+sqlalchemy2-stubs = "*"
 
 [dev-packages]
 
 [requires]
 python_version = "3.9"
+
+[pipenv]
+allow_prereleases = true
