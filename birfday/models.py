@@ -1,3 +1,4 @@
+import calendar
 import datetime
 import logging
 from typing import Optional, List, Any
@@ -79,3 +80,15 @@ class Birthday(config.Base):
         return session.execute(
             select(cls).where(cls.month == month)
         ).scalars().all()
+
+    def __str__(self):
+        """Format a birthday string as mrkdwn so we can easily send messages."""
+        fmt = (
+            f"*{self.first_name} {self.last_name}* ("
+            f"{calendar.month_name[self.month]} {self.day})"
+        )
+
+        if self.note:
+            fmt += f":\n_{self.note}_"
+
+        return fmt

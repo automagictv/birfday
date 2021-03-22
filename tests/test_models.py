@@ -1,3 +1,4 @@
+import calendar
 import datetime
 import random
 
@@ -174,3 +175,26 @@ class TestBirthdayModel:
             _ = models.Birthday.create_birthday(
                 "fake", "fake", 5, 0
             )
+
+    def test_printing_formats_correctly_with_note(self):
+        """Tests that we format our birthday string correctly."""
+        model = BirthdayFactory.create()
+
+        expected = (
+            f"*{model.first_name} {model.last_name}* ("
+            f"{calendar.month_name[model.month]} {model.day}):\n"
+            f"_{model.note}_"
+        )
+
+        assert f"{model}" == expected
+
+    def test_printing_formats_correctly_without_note(self):
+        """Tests that we format our birthday string correctly."""
+        model = BirthdayFactory.create()
+        model.note = None
+        expected = (
+            f"*{model.first_name} {model.last_name}* ("
+            f"{calendar.month_name[model.month]} {model.day})"
+        )
+
+        assert f"{model}" == expected
