@@ -1,4 +1,5 @@
 import pytest
+import telegram
 
 from birfday import telegram_helper
 
@@ -8,7 +9,7 @@ class TestTelegramHelper:
     def test_helper_gets_bot_client(self, mocker):
         """Tests that the constructor retrieves a bot client."""
         mocker.patch.object(
-            telegram_helper.telegram,
+            telegram_helper,
             "Bot",
             autospec=True
         )
@@ -16,13 +17,13 @@ class TestTelegramHelper:
         fid = "FAKEID"
 
         _ = telegram_helper.TelegramFacade(token=fkey, cid=fid)
-        telegram_helper.telegram.Bot.assert_called_once_with(fkey, fid)
+        telegram_helper.Bot.assert_called_once_with(fkey)
 
     def test_send_message_calls_bot_send_message(self, mocker):
         """Tests that we call the Bot.send_message method to send."""
         mocker.patch.object(
-            telegram_helper.telegram.Bot,
-            "send_message",
+            telegram_helper,
+            "Bot",
             autospec=True
         )
 
@@ -36,5 +37,5 @@ class TestTelegramHelper:
         helper.client.send_message.assert_called_once_with(
             fid,
             fkmsg,
-            telegram.ParseMode.MARKDOWN
+            telegram.ParseMode.MARKDOWN_V2
         )
