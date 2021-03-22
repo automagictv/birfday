@@ -33,12 +33,12 @@ parser.add_argument(
     "--mode", type=str, default="RUN", help=(
         "Mode for the application. Defaults to RUN mode. Otherwise, to seed "
         "the database, use SEED mode with the --file argument. When passing in "
-        "a csv, make sure the following columns are included:\n"
-        "\t`first_name`: String"
-        "\t`last_name`: String"
-        "\t`month`: Int - month of the birthday."
-        "\t`day`: Int - day of the birthday."
-        "\t`note`: (Optional) String - note about the person."
+        "a csv, make sure the following columns are included:"
+        "\n\t`first_name`: String"
+        "\n\t`last_name`: String"
+        "\n\t`month`: Int - month of the birthday."
+        "\n\t`day`: Int - day of the birthday."
+        "\n\t`note`: (Optional) String - note about the person."
     )
 )
 
