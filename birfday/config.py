@@ -9,3 +9,7 @@ LOGFILE = os.environ.get("LOGFILE", "/tmp/birfdaylog")
 # Database configuration
 DATABASE = os.environ.get("DATABASE", "sqlite:///birfday.db")
 Base = declarative_base()
+
+# Telegram constants
+TELEGRAM_TOKEN = os.environ.get("TELEGRAM_TOKEN")
+TELEGRAM_CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID")

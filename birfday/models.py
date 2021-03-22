@@ -1,3 +1,4 @@
+import calendar
 import datetime
 import logging
 from typing import Optional, List, Any
@@ -7,6 +8,7 @@ import pytz
 from sqlalchemy import select
 from sqlalchemy import (Column, Integer, String, DateTime, Boolean)
 from sqlalchemy.orm import Session
+from sqlalchemy.schema import UniqueConstraint
 
 from birfday import config
 
@@ -24,6 +26,10 @@ class Birthday(config.Base):
     note = Column(String)
     dt_created = Column(DateTime, default=datetime.datetime.utcnow())
     dt_updated = Column(DateTime, default=datetime.datetime.utcnow())
+
+    __table_args__ = (
+        UniqueConstraint("first_name", "last_name", name="_first_last_uc"),
+    )
 
     @classmethod
     def create_birthday(
@@ -79,3 +85,15 @@ class Birthday(config.Base):
         return session.execute(
             select(cls).where(cls.month == month)
         ).scalars().all()
+
+    def __str__(self):
+        """Format a birthday string as mrkdwn so we can easily send messages."""
+        fmt = (
+            f"<b>{self.first_name} {self.last_name}</b> ("
+            f"{calendar.month_name[self.month]} {self.day})"
+        )
+
+        if self.note:
+            fmt += f":\n<i>{self.note}</i>"
+
+        return fmt
