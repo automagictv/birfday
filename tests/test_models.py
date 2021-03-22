@@ -181,9 +181,9 @@ class TestBirthdayModel:
         model = BirthdayFactory.create()
 
         expected = (
-            f"*{model.first_name} {model.last_name}* ("
+            f"<b>{model.first_name} {model.last_name}</b> ("
             f"{calendar.month_name[model.month]} {model.day}):\n"
-            f"_{model.note}_"
+            f"<i>{model.note}</i>"
         )
 
         assert f"{model}" == expected
@@ -193,7 +193,7 @@ class TestBirthdayModel:
         model = BirthdayFactory.create()
         model.note = None
         expected = (
-            f"*{model.first_name} {model.last_name}* ("
+            f"<b>{model.first_name} {model.last_name}</b> ("
             f"{calendar.month_name[model.month]} {model.day})"
         )
 

@@ -8,6 +8,7 @@ import pytz
 from sqlalchemy import select
 from sqlalchemy import (Column, Integer, String, DateTime, Boolean)
 from sqlalchemy.orm import Session
+from sqlalchemy.schema import UniqueConstraint
 
 from birfday import config
 
@@ -25,6 +26,10 @@ class Birthday(config.Base):
     note = Column(String)
     dt_created = Column(DateTime, default=datetime.datetime.utcnow())
     dt_updated = Column(DateTime, default=datetime.datetime.utcnow())
+
+    __table_args__ = (
+        UniqueConstraint("first_name", "last_name", name="_first_last_uc"),
+    )
 
     @classmethod
     def create_birthday(
@@ -84,11 +89,11 @@ class Birthday(config.Base):
     def __str__(self):
         """Format a birthday string as mrkdwn so we can easily send messages."""
         fmt = (
-            f"*{self.first_name} {self.last_name}* ("
+            f"<b>{self.first_name} {self.last_name}</b> ("
             f"{calendar.month_name[self.month]} {self.day})"
         )
 
         if self.note:
-            fmt += f":\n_{self.note}_"
+            fmt += f":\n<i>{self.note}</i>"
 
         return fmt

@@ -23,5 +23,5 @@ class TelegramFacade(object):
         return self.client.send_message(
             self.chat_id,
             message,
-            parse_mode = telegram.ParseMode.MARKDOWN_V2
+            parse_mode = telegram.ParseMode.HTML
         )

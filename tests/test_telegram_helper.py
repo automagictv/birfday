@@ -37,5 +37,5 @@ class TestTelegramHelper:
         helper.client.send_message.assert_called_once_with(
             fid,
             fkmsg,
-            telegram.ParseMode.MARKDOWN_V2
+            telegram.ParseMode.HTML
         )
