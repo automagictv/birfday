@@ -12,6 +12,7 @@ python-dateutil = "*"
 sqlalchemy = "*"
 mypy = "*"
 sqlalchemy2-stubs = "*"
+python-telegram-bot = "*"
 
 [dev-packages]
 
