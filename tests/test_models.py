@@ -67,7 +67,7 @@ class BirthdayFactory(factory.alchemy.SQLAlchemyModelFactory):
 
 class TestBirthdayModel:
 
-    def test_create_birthday_creates_without_kwargs(
+    def test_create_birthday_creates_without_optional_args(
         self, session, fake_datetime_utcnow
     ):
         """Tests that our classmethod actually creates a Birthday object."""
@@ -75,37 +75,48 @@ class TestBirthdayModel:
         last_name = "last"
         month = 5
         day = 2
-        note = "fake note"
 
-        test_obj = models.Birthday.create_birthday(
-            first_name, last_name, month, day, note
-        )
+        input_dict = {
+            "first_name": first_name,
+            "last_name": last_name,
+            "month": month,
+            "day": day,
+        }
+
+        test_obj = models.Birthday.create_birthday(input_dict)
 
         assert test_obj.first_name == first_name
         assert test_obj.last_name == last_name
         assert test_obj.month == month
         assert test_obj.day == day
-        assert test_obj.note == note
+        assert test_obj.note is None
         assert test_obj.dt_created is None
         assert test_obj.dt_updated is None
 
-    def test_create_birthday_creates_with_kwargs(
+    def test_create_birthday_creates_with_optional_args(
         self, session, fake_datetime_utcnow
     ):
         """Tests that our classmethod actually creates a Birthdayy object."""
-        first_name = "first"
-        last_name = "last"
+        first_name = "First"
+        last_name = "LAst"
         month = 5
         day = 2
         note = "fake note"
         dt_updated = "2021-05-05 05:05:05"
 
-        test_obj = models.Birthday.create_birthday(
-            first_name, last_name, month, day, note, dt_updated=dt_updated
-        )
+        input_dict = {
+            "first_name": first_name,
+            "last_name": last_name,
+            "month": month,
+            "day": day,
+            "note": note,
+            "dt_updated": dt_updated,
+        }
 
-        assert test_obj.first_name == first_name
-        assert test_obj.last_name == last_name
+        test_obj = models.Birthday.create_birthday(input_dict)
+
+        assert test_obj.first_name == first_name.lower()
+        assert test_obj.last_name == last_name.lower()
         assert test_obj.month == month
         assert test_obj.day == day
         assert test_obj.note == note
@@ -148,42 +159,59 @@ class TestBirthdayModel:
         """Tests that we raise for a month above 12."""
         with pytest.raises(
             ValueError, match="Month must be between 1 and 12 inclusive."):
-            _ = models.Birthday.create_birthday(
-                "fake", "fake", 15, 1
-            )
+            input_dict = {
+                "first_name": "fake",
+                "last_name": "fake",
+                "month": 15,
+                "day": 1,
+            }
+            _ = models.Birthday.create_birthday(input_dict)
 
     def test_low_month_raises(self, session):
         """Tests that we raise for a month below 1."""
         with pytest.raises(
             ValueError, match="Month must be between 1 and 12 inclusive."):
-            _ = models.Birthday.create_birthday(
-                "fake", "fake", 0, 1
-            )
+            input_dict = {
+                "first_name": "fake",
+                "last_name": "fake",
+                "month": 0,
+                "day": 1,
+            }
+            _ = models.Birthday.create_birthday(input_dict)
 
     def test_high_day_raises(self, session):
         """Tests that we raise for a day above 31."""
         with pytest.raises(
             ValueError, match="Day must be between 1 and 31 inclusive."):
-            _ = models.Birthday.create_birthday(
-                "fake", "fake", 6, 51
-            )
+            input_dict = {
+                "first_name": "fake",
+                "last_name": "fake",
+                "month": 6,
+                "day": 51,
+            }
+            _ = models.Birthday.create_birthday(input_dict)
 
     def test_low_day_raises(self, session):
         """Tests that we raise for a day below 1."""
         with pytest.raises(
             ValueError, match="Day must be between 1 and 31 inclusive."):
-            _ = models.Birthday.create_birthday(
-                "fake", "fake", 5, 0
-            )
+            input_dict = {
+                "first_name": "fake",
+                "last_name": "fake",
+                "month": 5,
+                "day": 0,
+            }
+            _ = models.Birthday.create_birthday(input_dict)
 
     def test_printing_formats_correctly_with_note(self):
         """Tests that we format our birthday string correctly."""
         model = BirthdayFactory.create()
 
         expected = (
-            f"<b>{model.first_name} {model.last_name}</b> ("
+            f"<b>{model.first_name.capitalize()} "
+            f"{model.last_name.capitalize()}</b> ("
             f"{calendar.month_name[model.month]} {model.day}):\n"
-            f"<i>{model.note}</i>"
+            f"<i>{model.note.capitalize()}</i>"
         )
 
         assert f"{model}" == expected
@@ -193,7 +221,8 @@ class TestBirthdayModel:
         model = BirthdayFactory.create()
         model.note = None
         expected = (
-            f"<b>{model.first_name} {model.last_name}</b> ("
+            f"<b>{model.first_name.capitalize()} "
+            f"{model.last_name.capitalize()}</b> ("
             f"{calendar.month_name[model.month]} {model.day})"
         )
 

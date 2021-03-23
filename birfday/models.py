@@ -32,43 +32,42 @@ class Birthday(config.Base):
     )
 
     @classmethod
-    def create_birthday(
-        cls, first_name: str, last_name: str, month: int, day: int,
-        note: Optional[str] = None, dt_updated: Optional[str] = None
-    ) -> "Birthday":
+    def create_birthday(cls, record):
         """ Creates a Birthday object.
 
         Args:
-            first_name: str, The person's first name.
-            last_name: str, The person's last name.
-            month: int, The numeric representation of the month (1-12).
-            day: int, The numeric representation of the day (1-31).
-            note: str, A note associated with this person (e.g. X's husband).
-            dt_updated: str, Datetime string for the update date of this
-                record in UTC time.
+            record: Dict containing birthday data. Fields (keys) should match:
+                first_name: str, The person's first name.
+                last_name: str, The person's last name.
+                month: int, The numeric representation of the month (1-12).
+                day: int, The numeric representation of the day (1-31).
+                note: str OPTIONAL, A note associated with this person
+                    (e.g. X's husband).
+                dt_updated: str OPTIONAL, Datetime string for the update date
+                    of this record in UTC time.
         Returns:
             An instantiated Birthday instance.
         """
-        if month not in range(1, 13):
+        if record["month"] not in range(1, 13):
             raise ValueError("Month must be between 1 and 12 inclusive.")
 
-        if day not in range(1, 32):
+        if record["day"] not in range(1, 32):
             raise ValueError("Day must be between 1 and 31 inclusive.")
 
         data_dict = {
-            "first_name": first_name,
-            "last_name": last_name,
-            "month": month,
-            "day": day,
-            "note": note,
+            "first_name": record["first_name"].lower(),
+            "last_name": record["last_name"].lower(),
+            "month": record["month"],
+            "day": record["day"],
+            "note": record.get("note")
         }
 
-        if dt_updated is not None:
+        dt_updated = record.get("dt_updated")
+        if dt_updated:
             data_dict["dt_updated"] = dateutil.parser.parse(
                 dt_updated).replace(tzinfo=pytz.utc)
 
         return cls(**data_dict)
-
 
     @classmethod
     def get_birthdays_for_month(
@@ -89,11 +88,12 @@ class Birthday(config.Base):
     def __str__(self):
         """Format a birthday string as mrkdwn so we can easily send messages."""
         fmt = (
-            f"<b>{self.first_name} {self.last_name}</b> ("
+            f"<b>{self.first_name.capitalize()} "
+            f"{self.last_name.capitalize()}</b> ("
             f"{calendar.month_name[self.month]} {self.day})"
         )
 
         if self.note:
-            fmt += f":\n<i>{self.note}</i>"
+            fmt += f":\n<i>{self.note.capitalize()}</i>"
 
         return fmt

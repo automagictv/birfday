@@ -70,7 +70,7 @@ def main(session: SessionTransaction) -> None:
     #  4. For all birthdays today, notify me and include template message.
     if birthdays:
         bot = telegram_helper.TelegramFacade()
-        message = "We've got some birthdays!\n" + "\n".join(
+        message = "We've got some birthdays!\n\n" + "\n\n".join(
             f"{bday}" for bday in birthdays
         )
         response = bot.send_message(message)
@@ -83,7 +83,9 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if args.mode == "SEED" and not args.file:
-        raise ValueError("SEED mode requires a file. Use --file.")
+        error = "SEED mode requires a file. Use --file."
+        logging.error(error)
+        raise ValueError(error)
 
     # Initialize a db session using a context manager and pass it to the main
     # function so we can use it to query / update our database druing runtime.
@@ -94,14 +96,23 @@ if __name__ == "__main__":
         if args.mode == "SEED":
             logging.info("In seed mode. Reading csv file...")
             df = pandas.read_csv(args.file, sep=",")
-            try:
-                session.bulk_insert_mappings(
-                    models.Birthday, df.to_dict(orient="records")
-                )
-            except IntegrityError as e:
-                logging.error(f"DB Integrity violated!\n{e}")
-                raise e
-            session.commit()
-            logging.info(f"Success! Added {len(df.index)} birthdays to the db.")
+            committed = 0
+
+            for _, row in df.iterrows():
+                birthday = models.Birthday.create_birthday(dict(row))
+                session.add(birthday)
+
+                try:
+                    session.flush()
+                except IntegrityError as e:
+                    logging.error(f"DB Integrity error! Skipping record\n{e}")
+                    session.rollback()
+                    continue
+
+                session.commit()
+                committed += 1
+
+            logging.info(f"Success! Added {committed} birthdays to the db.")
+
         else:
             main(session)
