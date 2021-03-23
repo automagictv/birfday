@@ -103,14 +103,12 @@ if __name__ == "__main__":
                 session.add(birthday)
 
                 try:
-                    session.flush()
+                    session.commit()
+                    committed += 1
                 except IntegrityError as e:
                     logging.error(f"DB Integrity error! Skipping record\n{e}")
                     session.rollback()
                     continue
-
-                session.commit()
-                committed += 1
 
             logging.info(f"Success! Added {committed} birthdays to the db.")
 
