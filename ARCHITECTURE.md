@@ -7,7 +7,6 @@
  * Add / Remove / Update birthday/person data.
  * Integrate with some notification / messaging API.
  * Can send messages to me via that API.
- * Store sample / default messages so I can just copy/paste.
  * All implementations must be testable.
 
 # Data Model
@@ -43,3 +42,5 @@
  * Add a gift tracker / recommender that reminds us to buy gifts.
  * Expand to different event types (anniversaries, graduation, etc.)
  * Add CLI functionality to interact with db / update data one by one.
+ * Store sample / default messages so you can copy/paste.
+ * If your friends are on telegram you may even be able to fully automate this.
