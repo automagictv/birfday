@@ -24,8 +24,8 @@ class Birthday(config.Base):
     month = Column(Integer, nullable=False)
     day = Column(Integer, nullable=False)
     note = Column(String)
-    dt_created = Column(DateTime, default=datetime.datetime.utcnow())
-    dt_updated = Column(DateTime, default=datetime.datetime.utcnow())
+    dt_created = Column(DateTime, default=datetime.datetime.utcnow)
+    dt_updated = Column(DateTime, default=datetime.datetime.utcnow)
 
     __table_args__ = (
         UniqueConstraint("first_name", "last_name", name="_first_last_uc"),
