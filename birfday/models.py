@@ -1,13 +1,11 @@
 import calendar
 import datetime
 import logging
-from typing import Optional, List, Any
 
 import dateutil.parser
 import pytz
 from sqlalchemy import select
 from sqlalchemy import (Column, Integer, String, DateTime, Boolean)
-from sqlalchemy.orm import Session
 from sqlalchemy.schema import UniqueConstraint
 
 from birfday import config
@@ -70,9 +68,7 @@ class Birthday(config.Base):
         return cls(**data_dict)
 
     @classmethod
-    def get_birthdays_for_month(
-        cls, session: Session, month: int
-    ) -> List["Birthday"]:
+    def get_birthdays_for_month(cls, session, month):
         """Queries the database to get all records with a birthday in month.
 
         Args:
