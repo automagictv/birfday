@@ -6,7 +6,6 @@ import logging
 
 import pandas
 from sqlalchemy.exc import IntegrityError
-from sqlalchemy.orm import SessionTransaction
 
 from birfday import config
 from birfday import models
@@ -47,7 +46,7 @@ parser.add_argument(
 )
 
 
-def main(session: SessionTransaction) -> None:
+def main(session):
     #  2. Read database to get birthdays.
     today = datetime.datetime.today()
     birthdays_this_month = models.Birthday.get_birthdays_for_month(

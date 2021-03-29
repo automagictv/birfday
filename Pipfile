@@ -10,8 +10,6 @@ pytest-mock = "*"
 pytz = "*"
 python-dateutil = "*"
 sqlalchemy = "*"
-mypy = "*"
-sqlalchemy2-stubs = "*"
 python-telegram-bot = "*"
 pandas = "*"
 
