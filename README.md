@@ -1,4 +1,4 @@
-# birfday
+# birfday (like my 5-year-old nephew says it)
 
 Get reminders to send friends/family birthday texts (video tutorial [here](https://youtu.be/KRn2xb1bxXM)).
 
