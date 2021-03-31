@@ -1,6 +1,6 @@
 # birfday
 
-Get reminders to send friends/family birthday texts.
+Get reminders to send friends/family birthday texts (video tutorial [here](https://youtu.be/KRn2xb1bxXM)).
 
 ## Setup
 
